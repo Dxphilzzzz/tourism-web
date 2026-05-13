@@ -1,0 +1,18 @@
+{
+  "name": "TourEase",
+  "short_name": "TourEase",
+  "description": "Community-powered tourism platform for the Philippines",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0ea5e9",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["travel", "tourism", "lifestyle"]
+}
