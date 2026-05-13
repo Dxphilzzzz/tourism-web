@@ -1,5 +1,5 @@
 // ============================================================
-// TourEase — Supabase Server Client (RSC / Route Handlers)
+// TourEase — Supabase Server Client
 // ============================================================
 
 import { createServerClient } from '@supabase/ssr';
@@ -11,60 +11,71 @@ type CookieToSet = {
   options?: Record<string, any>;
 };
 
+function getSupabaseEnv() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!url || !anonKey) {
+    throw new Error(
+      'Missing Supabase environment variables.'
+    );
+  }
+
+  return { url, anonKey };
+}
+
 export async function createServerSupabaseClient() {
   const cookieStore = await cookies();
 
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
+  const { url, anonKey } = getSupabaseEnv();
 
-        setAll(cookiesToSet: CookieToSet[]) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options);
-            });
-          } catch {
-            // Server Components cannot set cookies
-            // Safe to ignore in RSC
-          }
-        },
+  return createServerClient(url, anonKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
       },
-    }
-  );
+
+      setAll(cookiesToSet: CookieToSet[]) {
+        try {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, options);
+          });
+        } catch {
+          // Ignore cookie set errors in RSC
+        }
+      },
+    },
+  });
 }
 
-/** ============================================================
- * Admin client using service role key — SERVER ONLY
- * NEVER expose this client to the browser
- * ============================================================
- */
 export async function createAdminSupabaseClient() {
   const cookieStore = await cookies();
 
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-        setAll(cookiesToSet: CookieToSet[]) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options);
-            });
-          } catch {
-            // Ignore cookie errors in Server Components
-          }
-        },
+  if (!url || !serviceRoleKey) {
+    throw new Error(
+      'Missing Supabase admin environment variables.'
+    );
+  }
+
+  return createServerClient(url, serviceRoleKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
       },
-    }
-  );
+
+      setAll(cookiesToSet: CookieToSet[]) {
+        try {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, options);
+          });
+        } catch {
+          // Ignore cookie set errors
+        }
+      },
+    },
+  });
 }
