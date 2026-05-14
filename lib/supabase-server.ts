@@ -1,81 +1,88 @@
 // ============================================================
-// TourEase — Supabase Server Client
+// TourEase — Supabase Server Client (SAFE FOR CLOUDFLARE)
 // ============================================================
 
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
-type CookieToSet = {
-  name: string;
-  value: string;
-  options?: Record<string, any>;
-};
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-function getSupabaseEnv() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!url || !anonKey) {
-    throw new Error(
-      'Missing Supabase environment variables.'
-    );
-  }
-
-  return { url, anonKey };
-}
+// ============================================================
+// Server Client
+// ============================================================
 
 export async function createServerSupabaseClient() {
   const cookieStore = await cookies();
 
-  const { url, anonKey } = getSupabaseEnv();
+  const url = supabaseUrl || 'https://placeholder.supabase.co';
+  const key = supabaseAnonKey || 'placeholder-anon-key';
 
-  return createServerClient(url, anonKey, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll();
-      },
+  return createServerClient(
+    url,
+    key,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
 
-      setAll(cookiesToSet: CookieToSet[]) {
-        try {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            cookieStore.set(name, value, options);
-          });
-        } catch {
-          // Ignore cookie set errors in RSC
-        }
+        setAll(
+          cookiesToSet: {
+            name: string;
+            value: string;
+            options?: Record<string, unknown>;
+          }[]
+        ) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              cookieStore.set(name, value, options);
+            });
+          } catch {
+            // Ignore errors in Server Components
+          }
+        },
       },
-    },
-  });
+    }
+  );
 }
+
+// ============================================================
+// Admin Client
+// ============================================================
 
 export async function createAdminSupabaseClient() {
   const cookieStore = await cookies();
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey =
-    process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const url = supabaseUrl || 'https://placeholder.supabase.co';
+  const key = supabaseServiceRoleKey || 'placeholder-service-role-key';
 
-  if (!url || !serviceRoleKey) {
-    throw new Error(
-      'Missing Supabase admin environment variables.'
-    );
-  }
+  return createServerClient(
+    url,
+    key,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
 
-  return createServerClient(url, serviceRoleKey, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll();
+        setAll(
+          cookiesToSet: {
+            name: string;
+            value: string;
+            options?: Record<string, unknown>;
+          }[]
+        ) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              cookieStore.set(name, value, options);
+            });
+          } catch {
+            // Ignore cookie errors
+          }
+        },
       },
-
-      setAll(cookiesToSet: CookieToSet[]) {
-        try {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            cookieStore.set(name, value, options);
-          });
-        } catch {
-          // Ignore cookie set errors
-        }
-      },
-    },
-  });
+    }
+  );
 }

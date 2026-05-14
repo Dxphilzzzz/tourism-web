@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
+import Image from 'next/image';
 import { useAuth } from '@/hooks/use-auth';
 import { getInitials } from '@/lib/utils';
 import {
@@ -122,9 +123,9 @@ export default function Navbar() {
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
                     className="flex items-center gap-2 pl-1 pr-2 py-1 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                   >
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-ocean-500 to-teal-600 flex items-center justify-center text-white text-xs font-semibold overflow-hidden">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-ocean-500 to-teal-600 flex items-center justify-center text-white text-xs font-semibold overflow-hidden relative">
                       {profile?.avatar_url
-                        ? <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
+                        ? <Image src={profile.avatar_url} alt="" fill sizes="32px" className="object-cover" />
                         : <span>{getInitials(profile?.full_name ?? user.email ?? 'U')}</span>
                       }
                     </div>
