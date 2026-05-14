@@ -22,6 +22,7 @@ const nextConfig: NextConfig = {
         hostname: 'avatars.githubusercontent.com',
       },
     ],
+    unoptimized: true,
   },
 
   // ── Cloudflare / Edge compatibility ────────────────────────

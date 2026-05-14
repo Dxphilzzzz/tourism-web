@@ -53,12 +53,13 @@ export function truncate(str: string, maxLength: number): string {
 }
 
 /** Format a currency value in Philippine Peso */
-export function formatCurrency(amount: number): string {
+export function formatCurrency(amount: number | null | undefined): string {
+  const val = typeof amount === 'number' ? amount : 0;
   return new Intl.NumberFormat('en-PH', {
     style: 'currency',
     currency: 'PHP',
     minimumFractionDigits: 0,
-  }).format(amount);
+  }).format(val);
 }
 
 /** Get a Supabase storage public URL */

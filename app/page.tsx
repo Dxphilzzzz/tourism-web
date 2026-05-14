@@ -31,7 +31,7 @@ export default async function HomePage() {
     { count: bizCount },
     { count: reviewCount },
   ] = await Promise.all([
-    supabase.from('destinations').select('*, category:categories(*)').eq('status', 'approved').order('view_count', { ascending: false }).limit(8),
+    supabase.from('destinations').select('*, category:categories(*)').eq('status', 'approved').order('created_at', { ascending: false }).limit(8),
     supabase.from('businesses').select('*').eq('status', 'approved').order('average_rating', { ascending: false }).limit(4),
     supabase.from('announcements').select('*').eq('is_active', true).order('created_at', { ascending: false }).limit(5),
     supabase.from('emergency_contacts').select('*').eq('is_active', true).order('order_index'),
