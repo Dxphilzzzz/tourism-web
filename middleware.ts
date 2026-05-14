@@ -67,13 +67,21 @@ export async function middleware(request: NextRequest) {
   // ============================================================
 
   if (pathname.startsWith('/admin') && user) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .single();
 
-    if (profile?.role !== 'admin') {
+      if (profile?.role !== 'admin') {
+        return NextResponse.redirect(
+          new URL('/dashboard', request.url)
+        );
+      }
+    } catch (err) {
+      console.error('Middleware profile check failed:', err);
+      // Fallback: redirect to dashboard if profile check fails
       return NextResponse.redirect(
         new URL('/dashboard', request.url)
       );
