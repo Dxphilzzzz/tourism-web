@@ -6,6 +6,11 @@
   "compatibility_flags": [
     "nodejs_compat"
   ],
+  "vars": {
+    "NEXT_PUBLIC_SUPABASE_URL": "https://iooawnpmaqoegncuuniy.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlvb2F3bnBtYXFvZWduY3V1bml5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2Nzk1MTEsImV4cCI6MjA5NDI1NTUxMX0.jT6fovZ5cEKeGGGl6wj7EE0bT4wZ7hXWdF488Fk4ZeM",
+    "NEXT_PUBLIC_APP_URL": "https://tourism-web-app.ikiraaa0715.workers.dev"
+  },
   "assets": {
     "directory": ".open-next/assets"
   },
